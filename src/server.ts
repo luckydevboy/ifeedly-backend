@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, {Application, NextFunction, Request, Response} from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import fs from "fs/promises";
 import morgan from "morgan";
@@ -27,7 +27,7 @@ let feed: Post[] = [];
 let users: User[] = [];
 
 interface UserAuthRequest extends Request {
-    user?: any;
+  user?: any;
 }
 
 async function readUsersFromFile() {
@@ -56,14 +56,27 @@ async function writeUsersToFile() {
 
 app.get("/feed", async (req: Request, res: Response) => {
   const file = await fs.readFile(`${__dirname}/data/feed.json`, "utf-8");
-  const data: Post[] = JSON.parse(file);
+  const feed: Post[] = JSON.parse(file);
 
-  res.json(
-    data.sort(
+  const page = parseInt(req.query.page as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 10;
+
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = page * pageSize;
+
+  const feedToShow = feed
+    .slice(startIndex, endIndex)
+    .sort(
       (a, b) =>
         new Date(b.created_time).getTime() - new Date(a.created_time).getTime(),
-    ),
-  );
+    );
+
+  res.json({
+    data: feedToShow,
+    total: feed.length,
+    currentPage: page,
+    pageSize: pageSize,
+  });
 });
 
 app.post("/feed", async (req: Request, res: Response) => {
@@ -88,24 +101,24 @@ app.post("/feed", async (req: Request, res: Response) => {
 });
 
 const authenticateToken = (
-    req: UserAuthRequest,
-    res: Response,
-    next: NextFunction,
+  req: UserAuthRequest,
+  res: Response,
+  next: NextFunction,
 ) => {
-    const token = req.header("Authorization")?.split(" ")[1];
+  const token = req.header("Authorization")?.split(" ")[1];
 
-    if (!token) {
-        return res.sendStatus(401);
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token, process.env.SECRET_KEY as string, (err: any, user: any) => {
+    if (err) {
+      return res.sendStatus(403);
     }
 
-    jwt.verify(token, process.env.SECRET_KEY as string, (err: any, user: any) => {
-        if (err) {
-            return res.sendStatus(403);
-        }
-
-        req.user = user;
-        next();
-    });
+    req.user = user;
+    next();
+  });
 };
 
 app.post(
