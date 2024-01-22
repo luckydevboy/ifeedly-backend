@@ -9,3 +9,14 @@ export type Post = {
   };
   username: string;
 };
+
+export type User = {
+  id: string;
+  created_time: string;
+  username: string;
+  password: string;
+  name: {
+    firstName: string;
+    lastName: string;
+  };
+};
