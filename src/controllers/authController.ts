@@ -17,15 +17,17 @@ export const registerUser = async (req: Request, res: Response) => {
 
   const { username, password, name } = req.body;
 
+  const id = uuidv4();
+
   if (users.some((user) => user.username === username)) {
-    return res.status(400).json({ error: "User already exists" });
+    return res.status(400).json({ message: "User already exists" });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
   users.push({
     username: String(username),
     password: hashedPassword,
-    id: uuidv4(),
+    id,
     created_time: new Date().toISOString(),
     name,
   });
@@ -36,7 +38,7 @@ export const registerUser = async (req: Request, res: Response) => {
     "utf8",
   );
 
-  const token = jwt.sign({ username }, process.env.SECRET_KEY as string);
+  const token = jwt.sign({ id }, process.env.SECRET_KEY as string);
 
   return res.status(201).json({ username, token });
 };
@@ -55,10 +57,10 @@ export const loginUser = async (req: Request, res: Response) => {
   const user = users.find((user) => user.username === username);
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ error: "Invalid credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  const token = jwt.sign({ username }, process.env.SECRET_KEY as string);
+  const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY as string);
 
   return res.json({ username, token });
 };

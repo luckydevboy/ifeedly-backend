@@ -1,9 +1,10 @@
 import express from "express";
-import { getFeed, postToFeed } from "../controllers";
+import { getFeed, postFeed } from "../controllers";
+import { authenticateToken } from "../middleware";
 
 const router = express.Router();
 
 router.get("/", getFeed);
-router.post("/", postToFeed);
+router.post("/", authenticateToken, postFeed);
 
 export default router;

@@ -13,12 +13,12 @@ export const authenticateToken = (
   const token = req.header("Authorization")?.split(" ")[1];
 
   if (!token) {
-    return res.sendStatus(401);
+    return res.status(401).json({ message: "Unauthorized!" });
   }
 
   jwt.verify(token, process.env.SECRET_KEY as string, (err: any, user: any) => {
     if (err) {
-      return res.sendStatus(403);
+      return res.status(403).json({ message: "Wrong token!" });
     }
 
     req.user = user;
