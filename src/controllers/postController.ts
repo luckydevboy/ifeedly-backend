@@ -12,6 +12,9 @@ export const getPosts = async (req: Request, res: Response) => {
   const pageSize = parseInt(req.query.pageSize as string) || 10;
 
   try {
+    const token = req.headers.authorization?.split(" ")[1];
+    const decoded = token ? (jwt.decode(token) as JwtPayload) : null;
+
     const posts = await PostModel.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * pageSize || 0)
@@ -25,16 +28,35 @@ export const getPosts = async (req: Request, res: Response) => {
 
     const total = await PostModel.countDocuments();
 
-    res.json({
-      status: "success",
-      data: {
-        items: posts.map((post) => ({
+    let postsWithLikes;
+
+    if (decoded) {
+      postsWithLikes = posts.map((post) => {
+        const isLiked = post.reactions.likes.includes(decoded.id);
+        return {
           ...post.toObject(),
           reactions: {
             ...post.toObject().reactions,
             likes: post.toObject().reactions.likes.length,
+            isLiked,
           },
-        })),
+        };
+      });
+    } else {
+      // If there is no authenticated user, return posts without liking information
+      postsWithLikes = posts.map((post) => ({
+        ...post.toObject(),
+        reactions: {
+          ...post.toObject().reactions,
+          likes: post.toObject().reactions.likes.length,
+        },
+      }));
+    }
+
+    res.json({
+      status: "success",
+      data: {
+        items: postsWithLikes,
         total,
         currentPage: page,
         pageSize,
