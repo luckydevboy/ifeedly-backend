@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import { postsRoutes, authRoutes } from "./routes";
 
 const app: Application = express();
-const port = process.env.port as string;
+const port = process.env.PORT as string;
 
 app.use(bodyParser.json());
 
