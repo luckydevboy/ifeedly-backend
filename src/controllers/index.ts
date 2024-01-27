@@ -1,2 +1,2 @@
 export * from "./authController";
-export * from "./feedController";
+export * from "./postController";
