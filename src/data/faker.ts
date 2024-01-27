@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { User } from "../src/models";
+import { User } from "../models";
 import fs from "fs/promises";
 import { ObjectId } from "bson";
 import bcrypt from "bcrypt";

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import fs from "fs/promises";
-import { PostModel, UserModel } from "../src/models";
+import { PostModel, UserModel } from "../models";
 
 const mongoURI = "mongodb://localhost:27017/ifeedly";
 
