@@ -18,7 +18,7 @@ if (process.argv[2] === "--posts") {
             likes: [],
             comments: [],
           },
-          userId: users[randomIndex]._id,
+          author: users[randomIndex]._id,
         };
       });
 

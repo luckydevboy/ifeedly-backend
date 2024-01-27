@@ -16,6 +16,11 @@ export const getPosts = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .skip((page - 1) * pageSize || 0)
       .limit(pageSize || 10)
+      .select("-createdAt")
+      .populate({
+        path: "author",
+        select: "username -_id",
+      })
       .exec();
 
     const total = await PostModel.countDocuments();
@@ -23,7 +28,7 @@ export const getPosts = async (req: Request, res: Response) => {
     res.json({
       status: "success",
       data: {
-        posts: posts.map((post) => ({
+        items: posts.map((post) => ({
           ...post.toObject(),
           reactions: {
             ...post.toObject().reactions,
@@ -49,7 +54,7 @@ export const createPost = async (req: Request, res: Response) => {
 
     const post = new PostModel({
       content: req.body.content,
-      userId: decoded.id,
+      author: decoded.id,
     });
 
     await post.save();
@@ -90,7 +95,7 @@ export const likePost = async (req: Request, res: Response) => {
     return res.json({
       status: "success",
       data: {
-        posts: {
+        items: {
           ...post.toObject(),
           reactions: {
             ...post.toObject().reactions,

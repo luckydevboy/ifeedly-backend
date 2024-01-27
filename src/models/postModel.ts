@@ -5,7 +5,7 @@ export interface Post {
   reactions: {
     likes: string[];
   };
-  userId: ObjectId;
+  author: ObjectId;
 }
 
 const postSchema = new Schema<Post>(
@@ -14,7 +14,7 @@ const postSchema = new Schema<Post>(
     reactions: {
       likes: { type: [String], default: [] },
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true },
 );
