@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import { postsRoutes, authRoutes } from "./routes";
 
 const app: Application = express();
-const port: number = 3001;
+const port = process.env.port as string;
 
 app.use(bodyParser.json());
 
@@ -22,7 +22,7 @@ app.use(morgan("tiny"));
 app.use("/posts", postsRoutes);
 app.use("/auth", authRoutes);
 
-mongoose.connect("mongodb://localhost:27017/ifeedly").then(() => {
+mongoose.connect(process.env.MONGODB_URI as string).then(() => {
   console.log("Database connected");
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
