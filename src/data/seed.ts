@@ -10,15 +10,17 @@ async function seedDatabase() {
 
     console.log("Connected to MongoDB");
 
-    await PostModel.collection.drop();
-
     if (process.argv[2] === "--users") {
+      await UserModel.collection.drop();
+
       const file = await fs.readFile(`${__dirname}/users.json`, "utf8");
       const users = JSON.parse(file);
 
       await UserModel.create(users);
       console.log("Database seeded with users.");
     } else if (process.argv[2] === "--posts") {
+      await PostModel.collection.drop();
+
       const file = await fs.readFile(`${__dirname}/posts.json`, "utf8");
       const posts = JSON.parse(file);
 

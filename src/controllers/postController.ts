@@ -19,10 +19,9 @@ export const getPosts = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .skip((page - 1) * pageSize || 0)
       .limit(pageSize || 10)
-      .select("-createdAt")
       .populate({
         path: "author",
-        select: "username -_id",
+        select: "username name -_id",
       })
       .exec();
 

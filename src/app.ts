@@ -22,9 +22,15 @@ app.use(morgan("tiny"));
 app.use("/posts", postsRoutes);
 app.use("/auth", authRoutes);
 
-mongoose.connect(process.env.MONGODB_URI as string).then(() => {
-  console.log("Database connected");
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+mongoose
+  .connect(process.env.MONGODB_URI as string)
+  .then(() => {
+    console.log("Database connected");
+  })
+  .catch((err) => {
+    console.log("Database connection error!", err);
   });
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
