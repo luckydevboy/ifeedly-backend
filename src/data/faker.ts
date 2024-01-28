@@ -9,7 +9,7 @@ if (process.argv[2] === "--posts") {
     .then((file) => {
       const users: User[] = JSON.parse(file);
 
-      const posts = Array.from({ length: 40 }, () => {
+      const posts = Array.from({ length: Number(process.argv[3]) }, () => {
         const randomIndex = Math.floor(Math.random() * (users.length - 1));
         return {
           _id: new ObjectId(),
@@ -38,10 +38,11 @@ if (process.argv[2] === "--posts") {
       console.log(err);
     });
 } else if (process.argv[2] === "--users") {
-  const users = Array.from({ length: 4 }, () => ({
+  const users = Array.from({ length: Number(process.argv[3]) }, () => ({
     _id: new ObjectId(),
     username: faker.internet.userName(),
     name: faker.person.fullName(),
+    image: faker.image.avatar(),
     password: bcrypt.hashSync("test1234", 10),
   }));
 

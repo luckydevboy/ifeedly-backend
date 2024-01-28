@@ -5,6 +5,7 @@ export interface User {
   username: string;
   password: string;
   name: string;
+  image: string;
 }
 
 const userSchema = new Schema<User>(
@@ -12,6 +13,7 @@ const userSchema = new Schema<User>(
     username: { type: String, required: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
+    image: { type: String, required: true },
   },
   { timestamps: true },
 );

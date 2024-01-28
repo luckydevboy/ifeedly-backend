@@ -21,7 +21,7 @@ export const getPosts = async (req: Request, res: Response) => {
       .limit(pageSize || 10)
       .populate({
         path: "author",
-        select: "username name -_id",
+        select: "username name image -_id",
       })
       .exec();
 
