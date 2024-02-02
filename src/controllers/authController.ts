@@ -2,21 +2,18 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { User, UserModel } from "../models";
-import fs from "fs/promises";
+import { UserModel } from "../models";
 
 export const registerUser = async (req: Request, res: Response) => {
-  const file = await fs.readFile(`${__dirname}/../../data/users.json`, "utf-8");
-  const users: User[] = JSON.parse(file);
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, password, name } = req.body;
+  const { username, password, name, image } = req.body;
+  const foundUser = await UserModel.findOne({ username });
 
-  if (users.some((user) => user.username === username)) {
+  if (foundUser) {
     return res.status(400).json({ message: "User already exists" });
   }
 
@@ -26,6 +23,7 @@ export const registerUser = async (req: Request, res: Response) => {
     username,
     password: hashedPassword,
     name,
+    image,
   });
 
   const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY as string);
