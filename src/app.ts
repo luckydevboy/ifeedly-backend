@@ -12,7 +12,7 @@ const port = process.env.PORT as string;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://ifeedly.vercel.app/"],
   optionsSuccessStatus: 200,
 };
 

@@ -1,12 +1,11 @@
+import "dotenv/config";
 import mongoose from "mongoose";
 import fs from "fs/promises";
 import { PostModel, UserModel } from "../models";
 
-const mongoURI = "mongodb://localhost:27017/ifeedly";
-
 async function seedDatabase() {
   try {
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(process.env.MONGODB_URI as string);
 
     console.log("Connected to MongoDB");
 
