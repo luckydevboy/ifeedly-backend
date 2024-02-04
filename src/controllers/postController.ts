@@ -65,6 +65,26 @@ export const getPosts = async (req: Request, res: Response) => {
   }
 };
 
+export const getPost = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const post = await PostModel.findById(id).populate({
+      path: "author",
+      select: "username name image -_id",
+    });
+
+    res.json({
+      status: "success",
+      data: {
+        post,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching feed:", error);
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
+  }
+};
+
 export const createPost = async (req: Request, res: Response) => {
   try {
     const decoded = jwt.decode(
