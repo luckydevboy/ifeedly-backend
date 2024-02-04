@@ -55,10 +55,8 @@ export const getPosts = async (req: Request, res: Response) => {
     res.json({
       status: "success",
       data: {
-        items: postsWithLikes,
         total,
-        currentPage: page,
-        pageSize,
+        posts: postsWithLikes,
       },
     });
   } catch (error) {
@@ -116,7 +114,7 @@ export const likePost = async (req: Request, res: Response) => {
     return res.json({
       status: "success",
       data: {
-        items: {
+        post: {
           ...post.toObject(),
           reactions: {
             ...post.toObject().reactions,
