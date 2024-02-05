@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { User } from "../models";
+import { IUser } from "../models";
 import fs from "fs/promises";
 import { ObjectId } from "bson";
 import bcrypt from "bcrypt";
@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 if (process.argv[2] === "--posts") {
   fs.readFile(`${__dirname}/users.json`, "utf8")
     .then((file) => {
-      const users: User[] = JSON.parse(file);
+      const users: IUser[] = JSON.parse(file);
 
       const posts = Array.from({ length: Number(process.argv[3]) }, () => {
         const randomIndex = Math.floor(Math.random() * (users.length - 1));

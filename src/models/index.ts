@@ -1,4 +1,4 @@
-export * from "./userModel";
-export * from "./postModel";
-export { default as PostModel } from "./postModel";
-export { default as UserModel } from "./userModel";
+export * from "./user";
+export * from "./post";
+export { default as Post } from "./post";
+export { default as User } from "./user";

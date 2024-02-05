@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { PostModel } from "../models";
+import { Post } from "../models";
 
 interface JwtPayload {
   id: string;
@@ -15,7 +15,7 @@ export const getPosts = async (req: Request, res: Response) => {
     const token = req.headers.authorization?.split(" ")[1];
     const decoded = token ? (jwt.decode(token) as JwtPayload) : null;
 
-    const posts = await PostModel.find()
+    const posts = await Post.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * pageSize || 0)
       .limit(pageSize || 10)
@@ -25,7 +25,7 @@ export const getPosts = async (req: Request, res: Response) => {
       })
       .exec();
 
-    const total = await PostModel.countDocuments();
+    const total = await Post.countDocuments();
 
     let postsWithLikes;
 
@@ -68,7 +68,7 @@ export const getPosts = async (req: Request, res: Response) => {
 export const getPost = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const post = await PostModel.findById(id).populate({
+    const post = await Post.findById(id).populate({
       path: "author",
       select: "username name image -_id",
     });
@@ -91,7 +91,7 @@ export const createPost = async (req: Request, res: Response) => {
       String(req.headers.authorization?.split(" ")[1]),
     ) as JwtPayload;
 
-    const post = new PostModel({
+    const post = new Post({
       content: req.body.content,
       author: decoded.id,
     });
@@ -113,7 +113,7 @@ export const likePost = async (req: Request, res: Response) => {
       String(req.headers.authorization?.split(" ")[1]),
     ) as JwtPayload;
 
-    const post = await PostModel.findById(req.params.postId);
+    const post = await Post.findById(req.params.postId);
 
     if (!post) {
       return res

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export interface User {
+export interface IUser {
   _id?: string;
   username: string;
   password: string;
@@ -9,7 +9,7 @@ export interface User {
   role: string;
 }
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema<IUser>(
   {
     username: { type: String, required: true },
     password: { type: String, required: true },
@@ -20,6 +20,6 @@ const userSchema = new Schema<User>(
   { timestamps: true },
 );
 
-const UserModel = mongoose.model<User>("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
-export default UserModel;
+export default User;

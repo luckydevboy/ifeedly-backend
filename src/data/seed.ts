@@ -1,7 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import fs from "fs/promises";
-import { PostModel, UserModel } from "../models";
+import { Post, User } from "../models";
 
 async function seedDatabase() {
   try {
@@ -10,20 +10,20 @@ async function seedDatabase() {
     console.log("Connected to MongoDB");
 
     if (process.argv[2] === "--users") {
-      await UserModel.collection.drop();
+      await User.collection.drop();
 
       const file = await fs.readFile(`${__dirname}/users.json`, "utf8");
       const users = JSON.parse(file);
 
-      await UserModel.create(users);
+      await User.create(users);
       console.log("Database seeded with users.");
     } else if (process.argv[2] === "--posts") {
-      await PostModel.collection.drop();
+      await Post.collection.drop();
 
       const file = await fs.readFile(`${__dirname}/posts.json`, "utf8");
       const posts = JSON.parse(file);
 
-      await PostModel.create(posts);
+      await Post.create(posts);
       console.log("Database seeded with posts.");
     }
   } catch (error) {

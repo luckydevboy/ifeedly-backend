@@ -1,6 +1,6 @@
 import mongoose, { ObjectId, Schema } from "mongoose";
 
-export interface Post {
+export interface IPost {
   content: string;
   reactions: {
     likes: string[];
@@ -8,7 +8,7 @@ export interface Post {
   author: ObjectId;
 }
 
-const postSchema = new Schema<Post>(
+const postSchema = new Schema<IPost>(
   {
     content: { type: String, required: true },
     reactions: {
@@ -19,6 +19,6 @@ const postSchema = new Schema<Post>(
   { timestamps: true },
 );
 
-const PostModel = mongoose.model<Post>("Post", postSchema);
+const Post = mongoose.model<IPost>("Post", postSchema);
 
-export default PostModel;
+export default Post;

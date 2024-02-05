@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../models";
+import { User } from "../models";
 
 export const registerUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -11,7 +11,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 
   const { username, password, name, image } = req.body;
-  const foundUser = await UserModel.findOne({ username });
+  const foundUser = await User.findOne({ username });
 
   if (foundUser) {
     return res.status(400).json({ message: "User already exists" });
@@ -19,7 +19,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   const hashedPassword = bcrypt.hashSync(password, 10);
 
-  const user = await UserModel.create({
+  const user = await User.create({
     username,
     password: hashedPassword,
     name,
@@ -40,7 +40,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const { username, password } = req.body;
 
-    const user = await UserModel.findOne({ username });
+    const user = await User.findOne({ username });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ message: "Invalid credentials" });

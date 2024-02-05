@@ -17,6 +17,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+// TODO: Just in dev mode
 app.use(morgan("tiny"));
 
 app.use("/posts", postsRoutes);
