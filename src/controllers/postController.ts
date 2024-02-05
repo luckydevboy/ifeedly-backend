@@ -118,7 +118,7 @@ export const likePost = async (req: Request, res: Response) => {
     if (!post) {
       return res
         .status(404)
-        .json({ status: "error", message: "Post not found" });
+        .json({ status: "error", message: "PostModel not found" });
     }
 
     // Check if the user has already liked the post

@@ -47,14 +47,14 @@ function seedDatabase() {
     try {
       yield mongoose_1.default.connect(mongoURI);
       console.log("Connected to MongoDB");
-      yield models_1.Post.collection.drop();
+      yield models_1.PostModel.collection.drop();
       if (process.argv[2] === "--users") {
         const file = yield promises_1.default.readFile(
           `${__dirname}/users.json`,
           "utf8",
         );
         const users = JSON.parse(file);
-        yield models_1.User.create(users);
+        yield models_1.UserModel.create(users);
         console.log("Database seeded with users.");
       } else if (process.argv[2] === "--posts") {
         const file = yield promises_1.default.readFile(
@@ -62,7 +62,7 @@ function seedDatabase() {
           "utf8",
         );
         const posts = JSON.parse(file);
-        yield models_1.Post.create(posts);
+        yield models_1.PostModel.create(posts);
         console.log("Database seeded with posts.");
       }
     } catch (error) {

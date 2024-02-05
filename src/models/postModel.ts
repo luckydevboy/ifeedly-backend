@@ -1,12 +1,5 @@
-import mongoose, { ObjectId, Schema } from "mongoose";
-
-export interface IPost {
-  content: string;
-  reactions: {
-    likes: string[];
-  };
-  author: ObjectId;
-}
+import mongoose, { Schema } from "mongoose";
+import { IPost } from "../interfaces";
 
 const postSchema = new Schema<IPost>(
   {
