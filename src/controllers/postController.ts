@@ -181,7 +181,7 @@ export const createComment = async (req: Request, res: Response) => {
     }
 
     const newComment = { content, author: decoded.id };
-    post.reactions.comments.push(newComment);
+    post.reactions.comments.unshift(newComment);
 
     await post.save();
 
