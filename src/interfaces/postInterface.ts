@@ -5,9 +5,9 @@ interface Post {
   content: string;
   reactions: {
     likes: string[];
+    comments: IComment[];
   };
   author: ObjectId;
-  comments: IComment[];
 }
 
 export default Post;

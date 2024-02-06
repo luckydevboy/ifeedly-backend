@@ -18,9 +18,9 @@ const postSchema = new Schema<IPost>(
     content: { type: String, required: true },
     reactions: {
       likes: { type: [String], default: [] },
+      comments: { type: [commentSchema], default: [] },
     },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    comments: { type: [commentSchema], default: [] },
   },
   { timestamps: true },
 );

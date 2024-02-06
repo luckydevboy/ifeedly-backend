@@ -48,6 +48,7 @@ export const getPosts = async (req: Request, res: Response) => {
         ...post.toObject(),
         reactions: {
           ...post.toObject().reactions,
+          comments: post.toObject().reactions.comments.length,
           likes: post.toObject().reactions.likes.length,
         },
       }));
@@ -75,7 +76,7 @@ export const getPost = async (req: Request, res: Response) => {
         select: "username name image -_id",
       })
       .populate({
-        path: "comments.author",
+        path: "reactions.comments.author",
         model: "User",
         select: "username name image -_id",
       });
@@ -83,7 +84,13 @@ export const getPost = async (req: Request, res: Response) => {
     res.json({
       status: "success",
       data: {
-        post,
+        post: {
+          ...post?.toObject(),
+          reactions: {
+            ...post?.toObject().reactions,
+            likes: post?.toObject().reactions.likes.length,
+          },
+        },
       },
     });
   } catch (error) {
@@ -174,7 +181,7 @@ export const createComment = async (req: Request, res: Response) => {
     }
 
     const newComment = { content, author: decoded.id };
-    post.comments.push(newComment);
+    post.reactions.comments.push(newComment);
 
     await post.save();
 
