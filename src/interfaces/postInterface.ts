@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { IComment } from "./index";
 
 interface Post {
   content: string;
@@ -6,6 +7,7 @@ interface Post {
     likes: string[];
   };
   author: ObjectId;
+  comments: IComment[];
 }
 
 export default Post;

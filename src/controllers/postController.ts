@@ -23,6 +23,7 @@ export const getPosts = async (req: Request, res: Response) => {
         path: "author",
         select: "username name image -_id",
       })
+      .select("-comments")
       .exec();
 
     const total = await Post.countDocuments();
@@ -68,10 +69,16 @@ export const getPosts = async (req: Request, res: Response) => {
 export const getPost = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const post = await Post.findById(id).populate({
-      path: "author",
-      select: "username name image -_id",
-    });
+    const post = await Post.findById(id)
+      .populate({
+        path: "author",
+        select: "username name image -_id",
+      })
+      .populate({
+        path: "comments.author",
+        model: "User",
+        select: "username name image -_id",
+      });
 
     res.json({
       status: "success",
@@ -118,7 +125,7 @@ export const likePost = async (req: Request, res: Response) => {
     if (!post) {
       return res
         .status(404)
-        .json({ status: "error", message: "PostModel not found" });
+        .json({ status: "error", message: "Post not found" });
     }
 
     // Check if the user has already liked the post
@@ -141,6 +148,40 @@ export const likePost = async (req: Request, res: Response) => {
             likes: post.toObject().reactions.likes.length,
           },
         },
+      },
+    });
+  } catch (error) {
+    console.error("Error liking post:", error);
+    return res
+      .status(500)
+      .json({ status: "error", message: "Internal Server Error" });
+  }
+};
+
+export const createComment = async (req: Request, res: Response) => {
+  const postId = req.params.postId;
+  const { content } = req.body;
+  const decoded = jwt.decode(
+    String(req.headers.authorization?.split(" ")[1]),
+  ) as JwtPayload;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    const newComment = { content, author: decoded.id };
+    post.comments.push(newComment);
+
+    await post.save();
+
+    res.json({
+      status: "success",
+      data: {
+        comment: newComment,
       },
     });
   } catch (error) {

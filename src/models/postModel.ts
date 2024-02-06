@@ -1,5 +1,17 @@
 import mongoose, { Schema } from "mongoose";
-import { IPost } from "../interfaces";
+import { IComment, IPost } from "../interfaces";
+
+const commentSchema = new Schema<IComment>(
+  {
+    content: { type: String, required: true },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true },
+);
 
 const postSchema = new Schema<IPost>(
   {
@@ -8,6 +20,7 @@ const postSchema = new Schema<IPost>(
       likes: { type: [String], default: [] },
     },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    comments: { type: [commentSchema], default: [] },
   },
   { timestamps: true },
 );
