@@ -23,7 +23,6 @@ export const getPosts = async (req: Request, res: Response) => {
         path: "author",
         select: "username name image -_id",
       })
-      .select("-comments")
       .exec();
 
     const total = await Post.countDocuments();
@@ -38,6 +37,7 @@ export const getPosts = async (req: Request, res: Response) => {
           reactions: {
             ...post.toObject().reactions,
             likes: post.toObject().reactions.likes.length,
+            comments: post.toObject().reactions.comments.length,
             isLiked,
           },
         };
