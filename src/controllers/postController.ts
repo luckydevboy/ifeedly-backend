@@ -54,7 +54,7 @@ export const getPosts = async (req: Request, res: Response) => {
       }));
     }
 
-    res.json({
+    return res.json({
       status: "success",
       data: {
         total,
@@ -63,7 +63,9 @@ export const getPosts = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error fetching feed:", error);
-    res.status(500).json({ status: "error", message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: "error", message: "Internal Server Error" });
   }
 };
 
@@ -81,7 +83,7 @@ export const getPost = async (req: Request, res: Response) => {
         select: "username name image -_id",
       });
 
-    res.json({
+    return res.json({
       status: "success",
       data: {
         post: {
@@ -95,7 +97,9 @@ export const getPost = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error fetching feed:", error);
-    res.status(500).json({ status: "error", message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: "error", message: "Internal Server Error" });
   }
 };
 
@@ -176,8 +180,7 @@ export const createComment = async (req: Request, res: Response) => {
     const post = await Post.findById(postId);
 
     if (!post) {
-      res.status(404).json({ message: "Post not found" });
-      return;
+      return res.status(404).json({ message: "Post not found" });
     }
 
     const newComment = { content, author: decoded.id };
@@ -185,7 +188,7 @@ export const createComment = async (req: Request, res: Response) => {
 
     await post.save();
 
-    res.json({
+    return res.json({
       status: "success",
       data: {
         comment: newComment,
