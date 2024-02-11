@@ -8,4 +8,6 @@ IFeedly is a news feed application containing a list of posts users can interact
 - Database: [MongoDB](https://www.mongodb.com/)
 - MongoDB Driver: [Mongoose](https://mongoosejs.com/)
 
-For frontend technologies check [this repo](https://github.com/luckydevboy/ifeedly).
+For the API check the [published Postman document](https://documenter.getpostman.com/view/8009262/2sA2r3YkDV).
+
+For the frontend technologies check [this repo](https://github.com/luckydevboy/ifeedly).
