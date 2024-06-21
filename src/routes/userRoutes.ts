@@ -1,4 +1,5 @@
 import express from "express";
+
 import { getProfile, updateUser } from "../controllers/userController";
 import { authenticateToken } from "../middleware";
 

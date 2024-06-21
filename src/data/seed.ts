@@ -1,6 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import fs from "fs/promises";
+
 import { Post, User } from "../models";
 
 async function seedDatabase() {

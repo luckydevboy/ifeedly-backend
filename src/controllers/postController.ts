@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+
 import { Post } from "../models";
 
 interface JwtPayload {

@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import fs from "fs/promises";
 import { ObjectId } from "bson";
 import bcrypt from "bcrypt";
+
 import { IUser } from "../interfaces";
 
 if (process.argv[2] === "--posts") {
