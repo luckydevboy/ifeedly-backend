@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs/promises";
 
 interface MulterRequest extends Request {
   files?: Express.Multer.File[];
@@ -21,6 +22,12 @@ export const upload = async (req: Request, res: Response) => {
       );
 
       const uploadResults = await Promise.all(uploadPromises);
+
+      const unlinkPromises = multerReq.files.map((file) =>
+        fs.unlink(file.path),
+      );
+      await Promise.all(unlinkPromises);
+
       res.status(201).json({
         status: "success",
         data: uploadResults.map((uploadResult) => ({
@@ -33,6 +40,7 @@ export const upload = async (req: Request, res: Response) => {
         })),
       });
     } catch (error) {
+      console.log(error);
       res
         .status(500)
         .json({ status: "error", message: "Internal Server Error" });
