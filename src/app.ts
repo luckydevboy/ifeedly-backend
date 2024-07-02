@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import mongoose from "mongoose";
 
-import { postsRoutes, authRoutes, userRoutes } from "./routes";
+import { postsRoutes, authRoutes, userRoutes, uploadRoutes } from "./routes";
 
 const app: Application = express();
 const port = process.env.PORT as string;
@@ -24,6 +24,7 @@ app.use(morgan("tiny"));
 app.use("/posts", postsRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/upload", uploadRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URI as string)
