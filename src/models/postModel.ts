@@ -22,6 +22,16 @@ const postSchema = new Schema<IPost>(
       comments: { type: [commentSchema], default: [] },
     },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    images: [
+      {
+        publicId: String,
+        secureUrl: String,
+        format: String,
+        resourceType: String,
+        bytes: Number,
+        createdAt: String,
+      },
+    ],
   },
   { timestamps: true },
 );

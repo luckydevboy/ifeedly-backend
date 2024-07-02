@@ -9,6 +9,14 @@ interface Post {
     comments: IComment[];
   };
   author: ObjectId;
+  images?: {
+    publicId: string;
+    secureUrl: string;
+    format: string;
+    resourceType: string;
+    bytes: number;
+    createdAt: string;
+  }[];
 }
 
 export default Post;

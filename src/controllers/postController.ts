@@ -113,6 +113,7 @@ export const createPost = async (req: Request, res: Response) => {
     const post = new Post({
       content: req.body.content,
       author: decoded.id,
+      ...(req.body.images && { images: req.body.images }),
     });
 
     await post.save();
