@@ -1,14 +1,11 @@
-import "dotenv/config";
 import express, { Application } from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
-import mongoose from "mongoose";
 
 import { postsRoutes, authRoutes, userRoutes, uploadRoutes } from "./routes";
 
 const app: Application = express();
-const port = process.env.PORT as string;
 
 app.use(bodyParser.json());
 
@@ -18,23 +15,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// TODO: Just in dev mode
-app.use(morgan("tiny"));
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("tiny"));
+}
 
 app.use("/posts", postsRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/upload", uploadRoutes);
 
-mongoose
-  .connect(process.env.MONGODB_URI as string)
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch((err) => {
-    console.log("Database connection error!", err);
-  });
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+export default app;
