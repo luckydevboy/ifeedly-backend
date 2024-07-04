@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { validationResult, param, body } from "express-validator";
 
 import { User } from "../models";
 
@@ -21,6 +22,26 @@ export const getProfile = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
+  // Validate request parameters
+  await param("id").isMongoId().withMessage("Invalid user ID").run(req);
+
+  // Validate request body
+  await body("username")
+    .optional()
+    .notEmpty()
+    .withMessage("Username is required")
+    .run(req);
+  await body("name")
+    .optional()
+    .notEmpty()
+    .withMessage("Name is required")
+    .run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const userId = req.params.userId;
 
@@ -36,13 +57,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
     const { username, name } = req.body;
 
-    if (!username && !name) {
-      return res.status(400).json({
-        status: "error",
-        message: "Username or name are required!",
-      });
-    }
-
     if (username) {
       const existingUser = await User.findOne({ username });
 
@@ -50,17 +64,6 @@ export const updateUser = async (req: Request, res: Response) => {
         return res.status(409).json({
           status: "error",
           message: "Username is already in use",
-        });
-      }
-    }
-
-    if (name) {
-      const existingUser = await User.findOne({ name });
-
-      if (existingUser && existingUser._id.toString() !== userId) {
-        return res.status(409).json({
-          status: "error",
-          message: "Name is already in use",
         });
       }
     }

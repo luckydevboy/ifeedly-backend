@@ -16,7 +16,7 @@ const commentSchema = new Schema<IComment>(
 
 const postSchema = new Schema<IPost>(
   {
-    content: { type: String, required: true },
+    content: { type: String, required: [true, "Content is required"] },
     reactions: {
       likes: { type: [String], default: [] },
       comments: { type: [commentSchema], default: [] },

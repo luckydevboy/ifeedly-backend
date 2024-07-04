@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { query, validationResult, param, body } from "express-validator";
 
 import { Post } from "../models";
 
@@ -9,6 +10,23 @@ interface JwtPayload {
 }
 
 export const getPosts = async (req: Request, res: Response) => {
+  // Validate request parameters
+  await query("page")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Page must be a positive integer")
+    .run(req);
+  await query("pageSize")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("PageSize must be a positive integer")
+    .run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   const page = parseInt(req.query.page as string) || 1;
   const pageSize = parseInt(req.query.pageSize as string) || 10;
 
@@ -71,6 +89,14 @@ export const getPosts = async (req: Request, res: Response) => {
 };
 
 export const getPost = async (req: Request, res: Response) => {
+  // Validate request parameters
+  await param("id").isMongoId().withMessage("Invalid post ID").run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   try {
     const id = req.params.id;
     const post = await Post.findById(id)
@@ -105,6 +131,50 @@ export const getPost = async (req: Request, res: Response) => {
 };
 
 export const createPost = async (req: Request, res: Response) => {
+  // Validate request body
+  await body("content").notEmpty().withMessage("Content is required").run(req);
+  await body("images")
+    .optional()
+    .isArray()
+    .withMessage("Images must be an array")
+    .custom((images) => {
+      for (const image of images) {
+        if (!image.publicId || typeof image.publicId !== "string") {
+          throw new Error(
+            "Each image must have a valid publicId of type string",
+          );
+        }
+        if (!image.secureUrl || typeof image.secureUrl !== "string") {
+          throw new Error(
+            "Each image must have a valid secureUrl of type string",
+          );
+        }
+        if (!image.format || typeof image.format !== "string") {
+          throw new Error("Each image must have a valid format of type string");
+        }
+        if (!image.resourceType || typeof image.resourceType !== "string") {
+          throw new Error(
+            "Each image must have a valid resourceType of type string",
+          );
+        }
+        if (typeof image.bytes !== "number") {
+          throw new Error("Each image must have a valid bytes of type number");
+        }
+        if (!image.createdAt || typeof image.createdAt !== "string") {
+          throw new Error(
+            "Each image must have a valid createdAt of type string",
+          );
+        }
+      }
+      return true;
+    })
+    .run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   try {
     const decoded = jwt.decode(
       String(req.headers.authorization?.split(" ")[1]),
@@ -128,6 +198,14 @@ export const createPost = async (req: Request, res: Response) => {
 };
 
 export const likePost = async (req: Request, res: Response) => {
+  // Validate request parameters
+  await param("postId").isMongoId().withMessage("Invalid post ID").run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   try {
     const decoded = jwt.decode(
       String(req.headers.authorization?.split(" ")[1]),
@@ -172,6 +250,15 @@ export const likePost = async (req: Request, res: Response) => {
 };
 
 export const createComment = async (req: Request, res: Response) => {
+  // Validate request parameters and body
+  await param("postId").isMongoId().withMessage("Invalid post ID").run(req);
+  await body("content").notEmpty().withMessage("Content is required").run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   const postId = req.params.postId;
   const { content } = req.body;
   const decoded = jwt.decode(
